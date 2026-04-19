@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Personal Library</title>
+    <link rel="stylesheet" href="jun.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <h2 class="logo">BOOK LOG</h2>
+            <ul id="book-list">
+                </ul>
+        </aside>
+
+        <main class="main-content">
+            <div id="empty-state">
+                <div class="icon">📖</div>
+                <p>목록에서 책을 선택하여 상세 내용을 확인하세요.</p>
+            </div>
+
+            <div id="detail-view" class="book-detail" style="display: none;">
+                <div class="detail-header">
+                    <div class="image-wrapper">
+                        <img id="book-img" src="" alt="표지">
+                    </div>
+                    <div class="text-wrapper">
+                        <h1 id="book-title"></h1>
+                        <p id="book-author"></p>
+                        <div class="status-badge">읽음</div>
+                    </div>
+                </div>
+                <hr>
+                <section class="detail-body">
+                    <h3>도서 소개</h3>
+                    <p id="book-desc"></p>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 10권의 도서 데이터 배열
+        const books = [
+            { id: 1, title: "1984", author: "조지 오웰", desc: "당의 철저한 감시와 통제 아래 개인의 자유가 완전히 말살된 디스토피아 세계를 그립니다. 주인공 윈스턴 스미스는 과거의 기록을 조작하는 업무를 수행하던 중, 체제에 대한 의문을 품고 금지된 사랑과 반역을 꿈꾸게 됩니다. '빅 브라더'라는 상징적인 존재는 텔레스크린을 통해 모든 시민의 일거수일투족을 감시하며, 심지어 사고방식까지 통제하는 언어인 '신어'를 보급합니다. 윈스턴은 저항 조직인 '형제단'에 가입하려 시도하지만, 결국 사상경찰에 체포되어 잔혹한 고문과 세뇌를 당하게 됩니다. 이 과정에서 그는 자신이 사랑했던 연인마저 배신하게 되고, 육체적·정신적 굴복 끝에 진심으로 빅 브라더를 사랑하게 되는 비극적 결말을 맞이합니다. 작품은 권력의 속성과 언어의 통제가 어떻게 인간의 본성을 파괴하는지를 날카롭게 경고합니다. 현대 사회의 감시 시스템에 대한 강력한 예언서로 평가받는 작품입니다.", img: "https://i.namu.wiki/i/Mw9jYl6EXe-dm9minmTwcbj73ScSdxm9SG1Bt9wQ8qMDQLp4gsaIjETLjig-YoGIpaGRdhiWf-Jw6PspJ7VaNhuG_E1U3TGPOJuP2eIMBCGi4ZrpZyP5VJCo4NKt_lylzo87dMtl4dz7M6oSsraPcA.webp" },
+            { id: 2, title: "유토피아", author: "토마스 모어", desc: "16세기 유럽 사회의 부조리를 비판하며, 현실에 존재하지 않는 이상적인 국가 '유토피아'를 소개하는 형식의 고전입니다. 1부에서는 사유 재산 제도로 인해 발생하는 빈부 격차와 탐욕스러운 귀족층의 횡포 등 당시 영국의 현실을 신랄하게 비판합니다. 2부에서는 항해가 라파엘을 통해 전해 들은 유토피아 섬의 생활 방식과 제도를 구체적으로 묘사합니다. 그곳은 사유 재산이 없고 모든 시민이 공평하게 노동하며, 금을 천하게 여기고 종교적 관용을 베푸는 평등한 사회입니다. 하지만 역설적으로 개인의 사생활이 엄격히 규제되고 국가의 계획에 따라 모든 것이 통제되는 모습도 보여줍니다. 작가는 이 가상의 섬을 통해 인간이 추구해야 할 진정한 정의와 공공의 이익이 무엇인지 묻습니다. '어디에도 없는 곳'이라는 제목의 의미처럼, 완벽한 사회에 대한 인류의 오랜 갈망과 한계를 동시에 보여주는 작품입니다.", img: "https://i.namu.wiki/i/JfmMJZfckNOOOCEGSskNXmOIBH9jDS2HveT9lhXnvuPNCncRh7kW0SvUmRfv6OdtnECyDnaBv2VKfEdRHo1NVyEVGFKzkjMYqK4qbl8YOKtD9HFC7bhTkjs6ymtQom_th9zTZK7fhH4YC80JHVDVoA.webp" },
+            { id: 3, title: "동물농장", author: "조지 오웰", desc: "인간의 착취를 견디다 못한 가축들이 반란을 일으켜 '동물 공화국'을 세우는 우화적 소설입니다. 초기에는 모든 동물은 평등하다는 슬로건 아래 민주적인 운영을 꿈꾸지만, 권력을 잡은 돼지들이 점차 인간의 악습을 닮아가며 부패하기 시작합니다. 영리한 돼지 나폴레옹은 정적 스노볼을 내쫓고 개들을 동원해 공포 정치를 펼치며 다른 동물들을 선동하고 노동력을 착취합니다. 시간이 흐를수록 농장의 규칙들은 돼지들의 편의에 맞게 수정되고 결국 어떤 동물은 다른 동물보다 더 평등하다 는 기괴한 원칙만 남게 됩니다. 나중에는 동물들이 창밖에서 돼지와 인간이 함께 술을 마시는 모습을 보며 누가 돼지고 누가 인간인지 구별하지 못하는 지경에 이릅니다. 러시아 혁명과 스탈린주의를 풍자한 이 작품은 권력의 속성과 혁명이 독재로 변질되는 과정을 냉철하게 보여줍니다.", img: "https://i.namu.wiki/i/bGnnZxtZii5ly0YXDXq9wHOEswmkCp8Ly-VXqNxBICr_9MoeJJn9zsaG1Bq14l2Np3Po775VeAEYWq3-jcw6ObbS69-CoVUZ82PqrpFocgvE0ARiryUrdUv0XoZofBmUO0BNiSrQrv0BdY93rKqeNA.webp" },
+            { id: 4, title: "이방인", author: "알베르 카뮈", desc: "어머니의 장례식에서 눈물을 흘리지 않을 정도로 세상에 무관심하고 냉소적인 주인공 뫼르소의 이야기입니다. 그는 어느 날 해변에서 내리쬐는 햇살이 눈부시다 는 이유만으로 아랍인을 살해하게 됩니다. 재판 과정에서 법정은 살인 사건 그 자체보다 뫼르소가 어머니의 죽음 앞에 슬퍼하지 않았다는 도덕적 결함을 문제 삼아 그를 비정상적인 인간으로 몰아갑니다. 뫼르소는 사회가 요구하는 거짓 감정을 거부하고 자신의 진실을 지키려다 결국 사형 선고를 받습니다. 그는 죽음을 앞두고서야 비로소 세상의 감미로운 무관심에 마음을 열고 자신의 실존을 자각하게 됩니다. 이 작품은 관습적 도덕과 종교적 위선에 저항하는 한 인간을 통해 삶의 부조리함을 강렬하게 그려냅니다. 현대 문학사에서 실존주의를 상징하는 가장 중요한 작품 중 하나로 꼽힙니다.", img: "https://i.namu.wiki/i/HVqjxfCwHyhpVKZM7le6iFyHAptPN_A0PdK9SZEgBPC6yOR5wqB3CSeLEPUwemUxVb_rjXAz2DRm7alZsU20YvsiPVTJ18DkgCCMl7dgEyR6No-ZfZk0pzCe8-mMz-kB1xiMQKuSlFirsFb57BUJQA.webp" },
+            { id: 5, title: "변신", author: "프란트 카프카", desc: "어느 날 아침, 잠에서 깨어난 영업사원 그레고르 잠자가 거대한 벌레로 변해버리면서 시작되는 충격적인 이야기입니다. 가족의 생계를 책임지던 성실한 아들이 벌레가 되자, 처음에는 당황하던 가족들은 점차 그를 혐오스러운 짐승으로 취급하며 외면하기 시작합니다. 의사소통이 불가능해진 그레고르는 방안에 갇힌 채 가족들의 대화를 엿들으며 점점 소외감을 느끼고 자아를 잃어갑니다. 아버지에게 사과를 맞아 상처를 입고 방치된 그는, 자신이 가족들에게 짐이 된다는 사실을 깨닫고 스스로 굶어 죽음을 선택합니다. 그의 죽음 이후 가족들이 마치 홀가분한 듯 소풍을 떠나는 마지막 장면은 현대 사회의 비정한 가족 관계와 인간 소외를 극명하게 보여줍니다. 인간의 가치가 경제적 능력에 따라 결정되는 도구화된 현실을 벌레라는 상징을 통해 날카롭게 풍자했습니다.", img: "https://i.namu.wiki/i/Q_18skN6Vo7Kbatvocog4gOtdf3r4x9WQdcO53anUNBren4KNnJNWG3VkShlHyi0iqErizo8ZxNeD7VfaUvasrHvjWC8ehraX348J6cOjBu7D-Za8c70PerQo3ZDch23a66T0GfdoEUlok9WdHGwAA.webp" },
+            { id: 6, title: "데미안", author: "헤르만 헤세", desc: "부유하고 평화로운 가정에서 자란 소년 에밀 싱클레어가 신비로운 친구 막스 데미안을 만나면서 자아를 찾아가는 성장 소설입니다. 싱클레어는 자신이 알던 밝은 세계 뒤에 존재하는 어두운 세계의 유혹과 갈등 속에서 고뇌하며 어린 시절을 보냅니다. 데미안은 카인과 아벨 이야기 등을 통해 관습적인 선악의 기준을 뒤집어 생각하게 하며 싱클레어에게 새로운 세계관을 심어줍니다. 주인공은 끊임없이 방황하며 신이자 악마인 '아브락사스'의 존재를 깨닫고, 알을 깨고 나오는 새처럼 자신의 껍데기를 파괴하려 노력합니다. 제1차 세계대전이라는 거대한 비극 속에서 싱클레어는 비로소 자신만의 길을 걷는 법을 배우게 됩니다. 태어나려는 자는 하나의 세계를 파괴해야 한다는 구절로 유명한 이 작품은 청년기 영혼의 치열한 투쟁을 아름답게 묘사합니다.", img: "https://i.namu.wiki/i/DbzwUYCQ7kWfBVr3IL-xj24-Lv1VGruZBMcwAbys3Q9fw7r4xYYqMmGhM5VZvgXhsLeudGLo1ksxVcGZLkzmOSsmuoTT_QZbGJZisn88RNe35z4Djpq5czGH1X85WLFu5ymaGlq1nSxuLgD3_wlysg.webp" },
+            { id: 7, title: "어린왕자", author: "앙투안 드 생텍쥐페리", desc: "사막에 불시착한 비행사인 '나'가 다른 소행성에서 온 어린 왕자를 만나며 나누는 순수한 대화와 여행담입니다. 어린 왕자는 자신이 살던 작은 별을 떠나 여러 별을 방문하며 권위적인 왕, 허영심 많은 사람, 술꾼 등 어리석은 어른들의 모습을 목격합니다. 지구에 도착한 왕자는 여우를 만나 '길들인다는 것'의 의미와 관계의 책임감을 배우게 되며, 자신의 별에 두고 온 장미가 왜 소중한지를 깨닫습니다. 가장 중요한 것은 눈에 보이지 않는다는 여우의 말은 각박한 현실을 사는 어른들에게 잃어버린 동심과 본질적인 가치를 되새기게 합니다. 결국 왕자는 자신의 꽃을 지키기 위해 뱀에게 물려 육신을 벗어던지고 자신의 별로 돌아갑니다. 아이의 시선을 통해 어른들의 편협함과 사랑의 진정한 의미를 일깨워주는 영원한 고전입니다.", img: "https://i.namu.wiki/i/WksEKnNRWgTMaOTVNnHXlVxQkog79dXU5Tjt98HkSdWykt0H4lYGg9Q5KIGBl5pDyxwLGkFNrnYDmgF10j7rgOp7R5iblVa-ZV1GML4_u4kN9vIBjkAxgveIixoxBOI9N0WnsqAM8ksMHHKBhwag8w.webp" },
+            { id: 8, title: "멋진 신세계", author: "올덕스 허슬리", desc: "과학 기술의 발전으로 고통과 불행이 사라졌지만, 동시에 인간의 존엄성과 개성도 사라진 미래 사회를 배경으로 합니다. 모든 인간은 시험관에서 배양되며 유전자 조작에 따라 계급이 나뉘고, 소마라는 약물을 통해 강제로 행복감을 유지합니다. 이곳에는 부모도, 가족도, 사랑도 없으며 오로지 소비와 쾌락만이 최고의 가치로 숭상됩니다. 원시인 보호구역에서 온 '존'은 이 기이한 문명 사회의 비인간성에 경악하며 셰익스피어의 구절을 인용해 인간다운 고통을 겪을 권리를 주장합니다. 하지만 문명인들은 그를 구경거리로 취급할 뿐이며, 존은 결국 광기 어린 집단 속에서 스스로 파멸을 선택합니다. 고통 없는 행복이 진정한 행복인지, 과학이 지배하는 유토피아가 실제로는 얼마나 끔찍한 디스토피아일 수 있는지를 강력하게 경고하는 작품입니다.", img: "https://i.namu.wiki/i/3U0DDhkghC8NxcbUl46_twpEXyWnuNymEF9fbC5WCjCpxZYvV4f_6elT96aYk0nS4DnanpKh7u2wAE8PFtbMGxkEg7rdJBGgY7tm7NXMySvzy1-6XN7pLmZK8IzIlVC_OurEInxY4ndGkh_MXKruOA.webp" },
+            { id: 9, title: "우리들", author: "예브게니 자먀틴", desc: "모든 건물이 유리로 되어 사생활이 완전히 노출되는 단일 제국의 시민들이 번호로 불리며 통제받는 삶을 다룹니다. 주인공인 수학자 D-503은 거대한 우주선 인테그랄을 건설하며 제국의 질서에 순응하며 살아가지만, 혁명적인 여성 I-330을 만나며 처음으로 영혼이라는 감정을 갖게 됩니다. 제국은 인간의 상상력을 병으로 간주하여 이를 제거하는 뇌 수술을 강요하고, 모든 개인의 삶을 치밀한 시간표에 맞추어 관리합니다. 수학적 완벽함과 질서를 숭상하는 제국에 대항해 I-330은 장벽 너머의 원시적 생명력과 결합하려 하지만, 결국 반란은 실패로 돌아갑니다. D-503은 결국 뇌 수술을 받고 아무런 감정 없이 동료의 죽음을 지켜보는 기계적인 존재로 되돌아갑니다. 조지 오웰과 헉슬리에게 큰 영감을 준 디스토피아 소설의 원조 격인 작품입니다.", img: "https://i.namu.wiki/i/Lfk97LOD44d8x66REU7sEUXVb39hhQCcNOS91gueMZIkQ81q8RvBuvimRr1zZR8i2AwzfESTxGPzTOtB4UnhDhi-vOr5NbUqLtAHGGX0yQRWmAOVmCT-eMetb4UFuQyYFweE_60zkQKB6SfiNo8xzQ.webp" },
+            { id: 10, title: "페스트", author: "알베르 카뮈", desc: "평범한 도시 오랑에 갑자기 닥친 페스트라는 재앙 앞에서 각기 다른 방식으로 대응하는 인간들의 군상을 보여줍니다. 의사 리유는 절망적인 상황 속에서도 묵묵히 자신의 소임을 다하며 환자들을 돌보고, 타루는 자원 보건대를 조직하여 연대의 힘으로 병에 맞섭니다. 누군가는 이 재앙을 신의 심벌이라며 체념하고, 누군가는 혼란을 틈타 이익을 챙기려 하지만, 대다수의 사람들은 죽음의 공포 속에서도 삶을 이어가려 애씁니다. 결국 페스트는 물러가지만, 리유는 이 재앙이 언제든 다시 돌아올 수 있음을 깨닫고 경계를 늦추지 않습니다. 작품은 피할 수 없는 거대한 부조리(페스트) 앞에서 인간이 취할 수 있는 최선의 태도가 반항과 연대임을 강조합니다. 절망 속에서도 인간성을 잃지 않으려는 숭고한 노력을 감동적으로 그려낸 명작입니다.", img: "https://i.namu.wiki/i/LsFkHgsZhcygezt8DHPugQCsImHI2KYwZVbEpaH3_hZ1ztXYjPwD2G4WFoWd9GaAhbwqfSKERNYewd8vAC1LJ02hRjJeURLhCtBOYezlk-o3Aewj6XthbsUljHMdLXQFU1XuzrFSwPBaqSKrugUDOA.webp" }
+        ];
+
+        const listContainer = document.getElementById('book-list');
+
+        // 리스트 동적 생성
+        books.forEach(book => {
+            const li = document.createElement('li');
+            li.className = 'list-item';
+            li.innerHTML = `<span class="id-badge">${book.id}</span> <span class="title-text">${book.title}</span>`;
+            li.onclick = () => updateDetail(book);
+            listContainer.appendChild(li);
+        });
+
+        // 1번(클릭) -> 2번(표시) 로직
+        function updateDetail(book) {
+            document.getElementById('empty-state').style.display = 'none';
+            document.getElementById('detail-view').style.display = 'block';
+
+            document.getElementById('book-img').src = book.img;
+            document.getElementById('book-title').innerText = book.title;
+            document.getElementById('book-author').innerText = "By " + book.author;
+            document.getElementById('book-desc').innerText = book.desc;
+
+            // 클릭 시 활성화 표시 스타일링 (선택 사항)
+            document.querySelectorAll('.list-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>
